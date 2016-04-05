@@ -1,0 +1,17 @@
+# Invite routing definition
+entity.invite.canonical:
+  route_name: entity.invite.canonical
+  base_route: entity.invite.canonical
+  title: 'View'
+
+entity.invite.edit_form:
+  route_name: entity.invite.edit_form
+  base_route: entity.invite.canonical
+  title: Edit
+
+entity.invite.delete_form:
+  route_name:  entity.invite.delete_form
+  base_route:  entity.invite.canonical
+  title: Delete
+  weight: 10
+

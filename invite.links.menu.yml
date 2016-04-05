@@ -1,0 +1,38 @@
+# Invite type menu items definition
+entity.invite_type.collection:
+  title: 'Invite type'
+  route_name: entity.invite_type.collection
+  description: 'List Invite type (bundles)'
+  parent: system.admin_structure
+  weight: 99
+
+# Invite menu items definition
+entity.invite.collection:
+  title: 'Invite list'
+  route_name: entity.invite.collection
+  description: 'List Invite entities'
+  parent: system.admin_structure
+  weight: 100
+
+# Invite type menu items definition
+entity.invite_type.collection:
+  title: 'Invite type'
+  route_name: entity.invite_type.collection
+  description: 'List Invite type (bundles)'
+  parent: system.admin_structure
+  weight: 99
+
+invite.invite_settings_form:
+  title: 'Invite'
+  route_name: invite.invite_settings_form
+  description: 'Manage Invite settings here.'
+  parent: system.admin_config_system
+  weight: 99
+
+invite.invite_by_email_settings_form:
+  title: 'Invite By Email'
+  route_name: invite.invite_by_email_settings_form
+  description: 'Settings for Invite By Email'
+  parent: system.admin_config_system
+  weight: 99
+

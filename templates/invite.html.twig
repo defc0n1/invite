@@ -1,0 +1,22 @@
+{#
+/**
+ * @file invite.html.twig
+ * Default theme implementation to present Invite data.
+ *
+ * This template is used when viewing Invite pages.
+ *
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ * - attributes: HTML attributes for the container element.
+ *
+ * @see template_preprocess_invite()
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes.addClass('invite') }}>
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+</div>
