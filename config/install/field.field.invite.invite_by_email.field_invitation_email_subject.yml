@@ -1,0 +1,19 @@
+uuid: 0ca3cbf5-b636-43dd-92fe-4b69b564f367
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.invite.field_invitation_email_subject
+    - invite.invite_type.invite_by_email
+id: invite.invite_by_email.field_invitation_email_subject
+field_name: field_invitation_email_subject
+entity_type: invite
+bundle: invite_by_email
+label: Subject
+description: 'Enter e-mail subject.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

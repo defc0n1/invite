@@ -1,0 +1,21 @@
+uuid: 2c0dbb63-c47c-4252-9ffb-bf97a827b55a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.invite.field_invitation_email_body
+    - invite.invite_type.invite_by_email
+  module:
+    - text
+id: invite.invite_by_email.field_invitation_email_body
+field_name: field_invitation_email_body
+entity_type: invite
+bundle: invite_by_email
+label: Body
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text_long

@@ -1,0 +1,19 @@
+uuid: 17b97351-4442-4c90-80f8-5b68a0111657
+langcode: en
+status: true
+dependencies:
+  module:
+    - invite
+    - text
+id: invite.field_invitation_email_body
+field_name: field_invitation_email_body
+entity_type: invite
+type: text_long
+settings: {  }
+module: text
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,19 @@
+uuid: 610c159c-e18e-407e-b8e7-a45548b3ed7a
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.invite.field_invitation_email_address
+    - invite.invite_type.invite_by_email
+id: invite.invite_by_email.field_invitation_email_address
+field_name: field_invitation_email_address
+entity_type: invite
+bundle: invite_by_email
+label: E-mail
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: email
