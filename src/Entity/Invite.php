@@ -76,7 +76,8 @@ class Invite extends ContentEntityBase implements InviteInterface {
       'user_id' => \Drupal::currentUser()->id(),
       'reg_code' => user_password(10),
       'invitee_user_id' => 0,
-      'expiry' => REQUEST_TIME + $expire_config * 24 * 60 * 60
+      'expiry' => REQUEST_TIME + $expire_config * 24 * 60 * 60,
+      'invite_status' => INVITE_VALID,
     );
   }
 
@@ -264,6 +265,10 @@ class Invite extends ContentEntityBase implements InviteInterface {
     $fields['canceled'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Expiry'))
       ->setDescription(t('The Unix timestamp when the invite has been withdrawn.'));
+
+    $fields['invite_status'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Invite Status'))
+      ->setDescription(t('This stores status of Invite entity, whether they are used, withdrawn, expired etc.'));
 
     return $fields;
   }

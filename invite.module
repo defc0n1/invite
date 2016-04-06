@@ -7,6 +7,15 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 
+
+/**
+ * Validity constants.
+ */
+define('INVITE_VALID', 1);
+define('INVITE_WITHDRAWN', 2);
+define('INVITE_USED', 3);
+define('INVITE_EXPIRED', 4);
+
 /**
  * Implements hook_help().
  */
