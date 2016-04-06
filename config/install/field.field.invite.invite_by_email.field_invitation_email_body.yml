@@ -7,6 +7,8 @@ dependencies:
     - invite.invite_type.invite_by_email
   module:
     - text
+_core:
+  default_config_hash: iEDbJcnltP62OVhBldja2NKVx8I4fA7nlWg4CUV-Rdw
 id: invite.invite_by_email.field_invitation_email_body
 field_name: field_invitation_email_body
 entity_type: invite

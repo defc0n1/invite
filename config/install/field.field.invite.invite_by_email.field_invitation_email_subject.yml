@@ -5,6 +5,8 @@ dependencies:
   config:
     - field.storage.invite.field_invitation_email_subject
     - invite.invite_type.invite_by_email
+_core:
+  default_config_hash: 3fi4Rl-miOdMlgJXjuYf5leG_ozakZsgSiLfqwrxNEU
 id: invite.invite_by_email.field_invitation_email_subject
 field_name: field_invitation_email_subject
 entity_type: invite

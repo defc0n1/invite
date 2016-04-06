@@ -23,16 +23,16 @@ entity.invite_type.collection:
   weight: 99
 
 invite.invite_settings_form:
-  title: 'Invite'
+  title: 'Invite Settings'
   route_name: invite.invite_settings_form
-  description: 'Manage Invite settings here.'
+  description: 'Basic configurations and settings related to Invite module'
   parent: system.admin_config_system
   weight: 99
 
 invite.invite_by_email_settings_form:
-  title: 'Invite By Email'
+  title: 'Invite By Email settings.'
   route_name: invite.invite_by_email_settings_form
-  description: 'Settings for Invite By Email'
+  description: 'Settings related to Invite By Email invitation method.'
   parent: system.admin_config_system
   weight: 99
 

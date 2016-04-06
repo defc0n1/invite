@@ -1,0 +1,38 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.invite.invite_by_email.field_invitation_email_address
+    - field.field.invite.invite_by_email.field_invitation_email_body
+    - field.field.invite.invite_by_email.field_invitation_email_subject
+    - invite.invite_type.invite_by_email
+  module:
+    - text
+id: invite.invite_by_email.default
+targetEntityType: invite
+bundle: invite_by_email
+mode: default
+content:
+  field_invitation_email_address:
+    type: email_default
+    weight: 0
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  field_invitation_email_body:
+    type: text_textarea
+    weight: 2
+    settings:
+      rows: 5
+      placeholder: ''
+    third_party_settings: {  }
+  field_invitation_email_subject:
+    type: string_textfield
+    weight: 1
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+hidden:
+  langcode: true

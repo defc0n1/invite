@@ -61,6 +61,7 @@ class InviteSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('restrict_role_login_by_ip_header'),
       '#description' => $this->t('Accounts that have been created with an invitation will require administrator approval.'),
     );
+
     return parent::buildForm($form, $form_state);
   }
 

@@ -52,11 +52,11 @@ use Drupal\user\UserInterface;
  *     "status" = "status",
  *   },
  *   links = {
- *     "canonical" = "/admin/structure/invite/{invite}",
- *     "add-form" = "/admin/structure/invite/add/{invite_type}",
- *     "edit-form" = "/admin/structure/invite/{invite}/edit",
- *     "delete-form" = "/admin/structure/invite/{invite}/delete",
- *     "collection" = "/admin/structure/invite",
+ *     "canonical" = "/invite/{invite}",
+ *     "add-form" = "/invite/add/{invite_type}",
+ *     "edit-form" = "/invite/{invite}/edit",
+ *     "delete-form" = "/invite/{invite}/delete",
+ *     "collection" = "/invite",
  *   },
  *   bundle_entity_type = "invite_type",
  *   field_ui_base_route = "entity.invite_type.edit_form"
@@ -68,9 +68,15 @@ class Invite extends ContentEntityBase implements InviteInterface {
    * {@inheritdoc}
    */
   public static function preCreate(EntityStorageInterface $storage_controller, array &$values) {
+
+    $expire_config = \Drupal::config('invite.invitesettings')->get('invitation_expiry');
+
     parent::preCreate($storage_controller, $values);
     $values += array(
       'user_id' => \Drupal::currentUser()->id(),
+      'reg_code' => user_password(10),
+      'invitee_user_id' => 0,
+      'expiry' => REQUEST_TIME + $expire_config * 24 * 60 * 60
     );
   }
 
@@ -159,16 +165,33 @@ class Invite extends ContentEntityBase implements InviteInterface {
   /**
    * {@inheritdoc}
    */
+  public function getRegistrationCode() {
+    return $this->get('reg_code')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setRegistrationCode($code) {
+    $this->set('reg_code', $code);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['id'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('ID'))
       ->setDescription(t('The ID of the Invite entity.'))
       ->setReadOnly(TRUE);
+
     $fields['type'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Type'))
       ->setDescription(t('The Invite type/bundle.'))
       ->setSetting('target_type', 'invite_type')
       ->setRequired(TRUE);
+
     $fields['uuid'] = BaseFieldDefinition::create('uuid')
       ->setLabel(t('UUID'))
       ->setDescription(t('The UUID of the Invite entity.'))
@@ -177,28 +200,7 @@ class Invite extends ContentEntityBase implements InviteInterface {
     $fields['user_id'] = BaseFieldDefinition::create('entity_reference')
       ->setLabel(t('Authored by'))
       ->setDescription(t('The user ID of author of the Invite entity.'))
-      ->setRevisionable(TRUE)
-      ->setSetting('target_type', 'user')
-      ->setSetting('handler', 'default')
-      ->setDefaultValueCallback('Drupal\node\Entity\Node::getCurrentUserId')
-      ->setTranslatable(TRUE)
-      ->setDisplayOptions('view', array(
-        'label' => 'hidden',
-        'type' => 'author',
-        'weight' => 0,
-      ))
-      ->setDisplayOptions('form', array(
-        'type' => 'entity_reference_autocomplete',
-        'weight' => 5,
-        'settings' => array(
-          'match_operator' => 'CONTAINS',
-          'size' => '60',
-          'autocomplete_type' => 'tags',
-          'placeholder' => '',
-        ),
-      ))
-      ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayConfigurable('view', TRUE);
+      ->setReadOnly(TRUE);
 
     $fields['name'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Name'))
@@ -219,6 +221,7 @@ class Invite extends ContentEntityBase implements InviteInterface {
       ))
       ->setDisplayConfigurable('form', TRUE)
       ->setDisplayConfigurable('view', TRUE);
+
 
     $fields['status'] = BaseFieldDefinition::create('boolean')
       ->setLabel(t('Publishing status'))
@@ -255,7 +258,7 @@ class Invite extends ContentEntityBase implements InviteInterface {
       ->setDescription(t('The Unix timestamp when the invite will expire.'));
 
     $fields['joined'] = BaseFieldDefinition::create('integer')
-      ->setLabel(t('Expiry'))
+      ->setLabel(t('Joined'))
       ->setDescription(t('Will be filled with the time the invite was accepted upon registration.'));
 
     $fields['canceled'] = BaseFieldDefinition::create('integer')
