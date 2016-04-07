@@ -78,6 +78,7 @@ class Invite extends ContentEntityBase implements InviteInterface {
       'invitee_user_id' => 0,
       'expiry' => REQUEST_TIME + $expire_config * 24 * 60 * 60,
       'invite_status' => INVITE_VALID,
+      'resend_attempt' => 0,
     );
   }
 
@@ -181,6 +182,81 @@ class Invite extends ContentEntityBase implements InviteInterface {
   /**
    * {@inheritdoc}
    */
+  public function getInviteStatus() {
+    return $this->get('invite_status')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setInviteStatus($status) {
+    $this->set('invite_status', $status);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getInviteeUserId() {
+    return $this->get('invitee_user_id')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setInviteeUserId($uid) {
+    $this->set('invitee_user_id', $uid);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getJoinedTime() {
+    return $this->get('joined')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setJoinedTime($timestamp) {
+    $this->set('joined', $timestamp);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getResendAttempt() {
+    return $this->get('resend_attempt')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setResendAttempt($number) {
+    $this->set('resend_attempt', $number);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getExpiryTime() {
+    return $this->get('expiry')->value;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setExpiryTime($timestamp) {
+    $this->set('expiry', $timestamp);
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public static function baseFieldDefinitions(EntityTypeInterface $entity_type) {
     $fields['id'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('ID'))
@@ -269,6 +345,10 @@ class Invite extends ContentEntityBase implements InviteInterface {
     $fields['invite_status'] = BaseFieldDefinition::create('integer')
       ->setLabel(t('Invite Status'))
       ->setDescription(t('This stores status of Invite entity, whether they are used, withdrawn, expired etc.'));
+
+    $fields['resend_attempt'] = BaseFieldDefinition::create('integer')
+      ->setLabel(t('Invite Resend Attemp'))
+      ->setDescription(t('This stores number of invitation send attempts.'));
 
     return $fields;
   }

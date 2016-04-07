@@ -1,1 +1,6 @@
 invite:
+_core:
+  default_config_hash: 6_SjD9dTS84s307PP5L4Gnd57lShSu4JmEie29lLfOY
+invitation_expiry: '7'
+path_to_registration_page: user.register
+admin_approval_for_invitee: 0

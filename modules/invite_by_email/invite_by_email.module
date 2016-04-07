@@ -1,0 +1,73 @@
+<?php
+
+/**
+ * @file
+ * Contains invite_by_email.module..
+ */
+use \Drupal\Core\Mail;
+
+/**
+ * Implements hook_ENTITY_TYPE_insert().
+ */
+function invite_by_email_invite_insert($invite) {
+  /** @var \Drupal\invite\InviteInterface $invite */
+  if ($invite->getType() == 'invite_by_email') {
+    invite_by_email_send_invitation($invite);
+  }
+}
+
+/**
+ * This function implements email sending method on invite creation.
+ */
+function invite_by_email_send_invitation($invite) {
+  $language = \Drupal::languageManager()->getCurrentLanguage();
+  $config = \Drupal::config('invite.invitesettings');
+  /** @var \Drupal\invite\InviteInterface $invite */
+  $attempt = $invite->getResendAttempt();
+  if ($attempt == 0) {
+    $expire_config = $config->get('invitation_expiry');
+    $expiry_time = REQUEST_TIME + $expire_config * 24 * 60 * 60;
+    $invite->setExpiryTime($expiry_time);
+    $attempt++;
+    $invite->setResendAttempt($attempt);
+  }
+
+  $from = $invite->field_invitation_email_address->value();
+  /** @var \Drupal\user\EntityOwnerInterface $inviter */
+  $inviter = $invite->getOwner();
+
+  if (empty($from)) {
+    // Never pass an empty string to drupal_mail()
+    $from = NULL;
+  }
+
+  $params = array('invite' => $invite);
+
+  // Override Reply-To address.
+  if (!$config->get('invite_use_users_email_replyto')) {
+    $reply_to = $config->get('invite_manual_reply_to');
+  }
+  else {
+    $reply_to = $inviter->getOwner()->getEmail();
+  }
+  if (!empty($reply_to)) {
+    $params['reply-to'] = $reply_to;
+  }
+
+  // Send e-mail.
+  $result =  \Drupal::service('plugin.manager.mail')->mail('invite_by_email', 'invite', $invite->field_invitation_email_address->value(), $language, $params, $from, TRUE);
+
+  return $result['result'];
+}
+
+/**
+ * Implements hook_mail().
+ */
+function invite_by_email_mail($key, &$message, $params) {
+  $invite = $params['invite'];
+  if (!empty($params['reply-to'])) {
+    $message['headers']['Reply-To'] = $params['reply-to'];
+  }
+  $message['subject'] = str_replace(array("\r", "\n"), '', trim($invite->field_invitation_email_subject->value()));
+  $message['body'][] = $invite->field_invitation_email_body->value();
+}

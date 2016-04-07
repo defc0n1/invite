@@ -58,7 +58,7 @@ class InviteSettingsForm extends ConfigFormBase {
     $form['admin_approval_for_invitee'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Require administrator approval for invitees'),
-      '#default_value' => $config->get('restrict_role_login_by_ip_header'),
+      '#default_value' => $config->get('admin_approval_for_invitee'),
       '#description' => $this->t('Accounts that have been created with an invitation will require administrator approval.'),
     );
 

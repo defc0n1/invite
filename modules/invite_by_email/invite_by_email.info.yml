@@ -1,0 +1,5 @@
+name: Invite By Email
+type: module
+description: Invite By Email sending method implementation.
+core: 8.x
+package: Custom

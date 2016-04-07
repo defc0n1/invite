@@ -85,4 +85,119 @@ interface InviteInterface extends ContentEntityInterface, EntityChangedInterface
    */
   public function setPublished($published);
 
+  /**
+   * Gets the Invite Registration Code.
+   *
+   * @return string
+   *   Registration Code of the Invite.
+   */
+  public function getRegistrationCode();
+
+  /**
+   * Sets the Invite Registration Code.
+   *
+   * @param string $code
+   *   The Invite registration code.
+   *
+   * @return \Drupal\invite\InviteInterface
+   *   The called Invite entity.
+   */
+  public function setRegistrationCode($code);
+
+  /**
+   * Gets the Invite Status.
+   *
+   * @return integer
+   *   Status of Invite whether it is active or expired etc.
+   */
+  public function getInviteStatus();
+
+  /**
+   * Sets the Invite status.
+   *
+   * @param string $status
+   *   The Invite status.
+   *
+   * @return \Drupal\invite\InviteInterface
+   *   The called Invite entity.
+   */
+  public function setInviteStatus($status);
+
+  /**
+   * Gets the Invitee User ID.
+   *
+   * @return integer
+   *   User ID of Invitee.
+   */
+  public function getInviteeUserId();
+
+  /**
+   * Sets the Invitee User ID.
+   *
+   * @param string $uid
+   *   The Invite user id.
+   *
+   * @return \Drupal\invite\InviteInterface
+   *   The called Invite entity.
+   */
+  public function setInviteeUserId($uid);
+
+  /**
+   * Gets the Invitee join timestamp.
+   *
+   * @return int
+   *   Creation timestamp of the Invite.
+   */
+  public function getJoinedTime();
+
+  /**
+   * Sets the Invitee joined timestamp.
+   *
+   * @param int $timestamp
+   *   The Invite creation timestamp.
+   *
+   * @return \Drupal\invite\InviteInterface
+   *   The called Invite entity.
+   */
+  public function setJoinedTime($timestamp);
+
+  /**
+   * Gets the invitation send attempt.
+   *
+   * @return int
+   *   Number of attempt the Invite.
+   */
+  public function getResendAttempt();
+
+  /**
+   * Sets the number of attempt.
+   *
+   * @param string $number
+   *   Number of attempt.
+   *
+   * @return \Drupal\invite\InviteInterface
+   *   The called Invite entity.
+   */
+  public function setResendAttempt($number);
+
+  /**
+   * Gets the Invitation expiration timestamp.
+   *
+   * @return int
+   *   Creation timestamp of the Invite.
+   */
+  public function getExpiryTime();
+
+  /**
+   * Sets the Invitation expiration timestamp.
+   *
+   * @param int $timestamp
+   *   The Invite expiration timestamp.
+   *
+   * @return \Drupal\invite\InviteInterface
+   *   The called Invite entity.
+   */
+  public function setExpiryTime($timestamp);
+
+
 }

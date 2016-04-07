@@ -55,19 +55,53 @@ class InviteAcceptController extends ControllerBase {
     /** @var \Drupal\invite\InviteInterface $invite */
     $invite = $this->entityManager->getStorage('invite')->loadByProperties(array('reg_code' => $reg_code));
     if ($invite = reset($invite)) {
-        $entity_id = $invite->id();
         if ($account->id() == $invite->getOwnerId()) {
           $message = $this->t('You could not use own invite.');
           $redirect = '<front>';
         }
+        elseif (($account->id() == 0) && ($invite->getInviteeUserId() == 0) && $invite->getInviteStatus() == INVITE_VALID) {
+          // Process new user invitation.
+          $_SESSION[INVITE_SESSION_CODE] = $invite->getRegistrationCode();
+          $redirect = \Drupal::config('invite.settings')->get('path_to_registration_page');
+        }
+        elseif (($account->id() != 0)  && ($invite->getInviteStatus() == INVITE_VALID)) {
+          $invite->setInviteeUserId($account->id());
+          $invite->setJoinedTime(REQUEST_TIME);
+          entity_save('invite', $invite);
+
+          unset($_SESSION[INVITE_SESSION_CODE]);
+          /** @var \Drupal\user\EntityOwnerInterface $inviter */
+          $inviter = $invite->getOwner();
+          $message = $this->t('You have accepted the invitation from !user', array('!user' => theme('username', array('account' => $inviter))));
+          $redirect = 'user.page';
+        }
+        elseif ($account->isAnonymous() && ($invite->getInviteeUserId() == 0) && ($invite->getInviteStatus() == INVITE_VALID)) {
+          $_SESSION[INVITE_SESSION_CODE] = $invite->getRegistrationCode();
+          $message = $this->t('You should login first to accept invite.');
+          $redirect = 'user.login';
+        }
+        else {
+          switch ($invite->getInviteStatus()) {
+            case INVITE_WITHDRAWN:
+              $message = $this->t('This invitation has been withdrawn.');
+              break;
+
+            case INVITE_USED:
+              $message = $this->t('This invitation has already been used.');
+              break;
+
+            case INVITE_EXPIRED:
+              $message = $this->t('This invitation has expired.');
+              break;
+
+            default:
+              $redirect = 'user.page';
+          }
+        }
     }
-
-    return [
-      '#type' => 'markup',
-      '#markup' => $this->t('Implement method: accept with parameter(s): !name', [
-        '!name' => $entity_id,
-      ]),
-    ];
+    if (!empty($message)) {
+      drupal_set_message($message);
+    }
+    return $this->redirect($redirect);
   }
-
 }
