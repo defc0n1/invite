@@ -24,7 +24,7 @@ class InviteListBuilder extends EntityListBuilder {
    */
   public function buildHeader() {
     $header['id'] = $this->t('Invite ID');
-    $header['name'] = $this->t('Name');
+    $header['subject'] = $this->t('Subject');
     return $header + parent::buildHeader();
   }
 
@@ -34,8 +34,8 @@ class InviteListBuilder extends EntityListBuilder {
   public function buildRow(EntityInterface $entity) {
     /* @var $entity \Drupal\invite\Entity\Invite */
     $row['id'] = $entity->id();
-    $row['name'] = $this->l(
-      $entity->label(),
+    $row['subject'] = $this->l(
+      $entity->field_invitation_email_subject->value,
       new Url(
         'entity.invite.edit_form', array(
           'invite' => $entity->id(),

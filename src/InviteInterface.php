@@ -27,25 +27,6 @@ interface InviteInterface extends ContentEntityInterface, EntityChangedInterface
   public function getType();
 
   /**
-   * Gets the Invite name.
-   *
-   * @return string
-   *   Name of the Invite.
-   */
-  public function getName();
-
-  /**
-   * Sets the Invite name.
-   *
-   * @param string $name
-   *   The Invite name.
-   *
-   * @return \Drupal\invite\InviteInterface
-   *   The called Invite entity.
-   */
-  public function setName($name);
-
-  /**
    * Gets the Invite creation timestamp.
    *
    * @return int

@@ -32,7 +32,7 @@ function invite_by_email_send_invitation($invite) {
     $invite->setResendAttempt($attempt);
   }
 
-  $from = $invite->field_invitation_email_address->value();
+  $from = $invite->field_invitation_email_address->value;
   /** @var \Drupal\user\EntityOwnerInterface $inviter */
   $inviter = $invite->getOwner();
 
@@ -55,8 +55,7 @@ function invite_by_email_send_invitation($invite) {
   }
 
   // Send e-mail.
-  $result =  \Drupal::service('plugin.manager.mail')->mail('invite_by_email', 'invite', $invite->field_invitation_email_address->value(), $language, $params, $from, TRUE);
-
+  $result =  \Drupal::service('plugin.manager.mail')->mail('invite_by_email', 'invite', $invite->field_invitation_email_address->value, $language, $params, $from, TRUE);
   return $result['result'];
 }
 
@@ -64,10 +63,93 @@ function invite_by_email_send_invitation($invite) {
  * Implements hook_mail().
  */
 function invite_by_email_mail($key, &$message, $params) {
+  $token_service = \Drupal::token();
+  $langcode = $message['langcode'];
+  /** @var \Drupal\invite\InviteInterface $invite */
   $invite = $params['invite'];
   if (!empty($params['reply-to'])) {
     $message['headers']['Reply-To'] = $params['reply-to'];
   }
-  $message['subject'] = str_replace(array("\r", "\n"), '', trim($invite->field_invitation_email_subject->value()));
-  $message['body'][] = $invite->field_invitation_email_body->value();
+  $invite_accept_url = \Drupal::url('invite.invite_accept_controller_accept',
+    array(
+      'reg_code' => $invite->getRegistrationCode(),
+    ),
+    array(
+      'absolute' => TRUE,
+    )
+  );
+  /** @var \Drupal\user\EntityOwnerInterface $inviter */
+  $inviter_id = $invite->getOwnerId();
+
+  /** @var \Drupal\user\UserInterface $inviter_user */
+  $inviter_user = \Drupal::entityManager()->getStorage('user')->load($inviter_id);
+  $variables['invite_by_email'] = array(
+    'invite_accept_url' => $invite_accept_url,
+    'inviter_name' => $inviter_user->getDisplayName(),
+  );
+
+  $token_options = ['langcode' => $langcode, 'callback' => 'invite_by_email_token_options', 'clear' => TRUE];
+  //$message['subject'] = str_replace(array("\r", "\n"), '', trim($invite->field_invitation_email_subject->value));
+  $message['subject'] = $token_service->replace($invite->field_invitation_email_subject->value, $variables, $token_options);
+  //$message['body'][] = $invite->field_invitation_email_body->value;
+  $message['body'][] = $token_service->replace($invite->field_invitation_email_body->value, $variables, $token_options);
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function invite_by_email_form_invite_invite_by_email_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $config = \Drupal::config('invite.invitebyemailsettings');
+  /** @var \Drupal\invite\InviteInterface $invite */
+  $invite = $form_state->getFormObject()->getEntity();
+  $language_subject = $invite->language();
+
+  $message_editable = TRUE;
+  // Hide if message is not editable.
+  if (!$message_editable) {
+    $form['field_invitation_email_subject']['#type'] = 'hidden';
+    $form['field_invitation_email_body']['#type'] = 'hidden';
+  }
+  else {
+    $form['field_invitation_email_subject']['widget'][0]['value']['#default_value'] = $config->get('invite_default_mail_subject');
+    $form['field_invitation_email_body']['widget'][0]['#default_value'] = $config->get('invite_default_mail_body');
+  }
+
+  $form['#validate'][] = 'invite_by_email_form_invite_form_validate';
+  $form['actions']['submit']['#value'] = t('Send Invitation');
+}
+
+
+/**
+ * Implementation for custom validation handler.
+ * That will prevent sending invitation to same user twice and sending invitation
+ * to him/herself.
+ *
+ * */
+function invite_by_email_form_invite_form_validate(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
+  $account = \Drupal::currentUser();
+  $mail_address = $form_state->getValue('field_invitation_email_address');
+
+  foreach($mail_address AS $key => $value) {
+    if (is_array($value)) {
+      if ($account->getEmail() == $value['value']) {
+        $form_state->setErrorByName('field_invitation_email_address', t('You couldn\'t invite yourself.'));
+      }
+      /** @var \Drupal\invite\InviteInterface $current_invite */
+      $current_invite = \Drupal::entityManager()->getStorage('invite')->loadByProperties(array('field_invitation_email_address' => $value['value']));
+      if ($current_invite) {
+        $form_state->setErrorByName('field_invitation_email_address', t('You have invited this user already'));
+      }
+    }
+  }
+}
+
+/**
+ * Implements token replacement functionality for replacing invite tokens.
+ */
+function invite_by_email_token_options(&$replacements, $data, $options) {
+  if (isset($data['invite_by_email'])) {
+    $replacements['[invite:inviter:name]'] = $data['invite_by_email']['inviter_name'];
+    $replacements['[invite:invite-accept-link]'] = $data['invite_by_email']['invite_accept_url'];
+  }
 }
