@@ -62,7 +62,7 @@ class InviteAcceptController extends ControllerBase {
         elseif (($account->id() == 0) && ($invite->getInviteeUserId() == 0) && $invite->getInviteStatus() == INVITE_VALID) {
           // Process new user invitation.
           $_SESSION[INVITE_SESSION_CODE] = $invite->getRegistrationCode();
-          $redirect = \Drupal::config('invite.settings')->get('path_to_registration_page');
+          $redirect = \Drupal::config('invite.invitesettings')->get('path_to_registration_page');
         }
         elseif (($account->id() != 0)  && ($invite->getInviteStatus() == INVITE_VALID)) {
           $invite->setInviteeUserId($account->id());

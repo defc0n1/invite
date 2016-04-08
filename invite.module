@@ -14,6 +14,7 @@ define('INVITE_VALID', 1);
 define('INVITE_WITHDRAWN', 2);
 define('INVITE_USED', 3);
 define('INVITE_EXPIRED', 4);
+define('INVITE_SESSION_CODE',   'invite_code');
 
 /**
  * Implements hook_help().
@@ -63,4 +64,22 @@ function invite_theme_suggestions_invite(array $variables) {
   $suggestions[] = 'invite__' . $entity->id();
   $suggestions[] = 'invite__' . $entity->id() . '__' . $sanitized_view_mode;
   return $suggestions;
+}
+
+/**
+ * Loads Invite using information stored in session.
+ *
+ * @return bool|Invite
+ */
+function invite_load_from_session() {
+  if (isset($_SESSION[INVITE_SESSION_CODE])) {
+    /** @var \Drupal\invite\InviteInterface $invite */
+    $invite = \Drupal::entityManager()->getStorage('invite')->loadByProperties(array('reg_code' => $_SESSION[INVITE_SESSION_CODE]));
+  }
+  if (!empty($invite)) {
+    return $invite;
+  }
+  else {
+    return FALSE;
+  }
 }
