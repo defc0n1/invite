@@ -30,6 +30,7 @@ function invite_by_email_send_invitation($invite) {
     $invite->setExpiryTime($expiry_time);
     $attempt++;
     $invite->setResendAttempt($attempt);
+    $invite->save();
   }
 
   $from = $invite->field_invitation_email_address->value;
