@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Contains \Drupal\invite\Form\InviteWithdrawForm.
+ * Contains \Drupal\invite\Form\InviteResendForm.
  */
 
 namespace Drupal\invite\Form;
@@ -16,11 +16,12 @@ use Drupal\Core\Entity\EntityManagerInterface;
 use \Drupal\Core\Url;
 
 /**
- * Class InviteWithdrawForm.
+ * Class InviteResendForm.
  *
  * @package Drupal\invite\Form
  */
-class InviteWithdrawForm extends FormBase {
+class InviteResendForm extends FormBase {
+
   /**
    * The node storage.
    *
@@ -57,11 +58,12 @@ class InviteWithdrawForm extends FormBase {
       $container->get('entity.manager')
     );
   }
+
   /**
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'invite_withdraw_form';
+    return 'invite_resend_form';
   }
 
   /**
@@ -69,16 +71,16 @@ class InviteWithdrawForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, InviteInterface $invite = NULL) {
     /** @var \Drupal\invite\InviteInterface $invite */
-    $form['#title'] = $this->t('Withdraw invite for ') . $invite->field_invitation_email_address->value;
+    $form['#title'] = $this->t('Resend invite to ') . $invite->field_invitation_email_address->value;
     $this->inviteStorage = $invite;
 
     $form['actions']['#type'] = 'actions';
-    $form['withdraw_invite'] = array(
+    $form['resend_invite'] = array(
       '#type' => 'submit',
-      '#title' => $this->t('Withdraw Invite'),
-      '#description' => $this->t('Withdraw current invite.'),
+      '#title' => $this->t('Resend Invite'),
+      '#description' => $this->t('Resend current invite.'),
       '#button_type' => 'primary',
-      '#value' => $this->t('Withdraw Invite'),
+      '#value' => $this->t('Resend Invite'),
     );
 
     return $form;
@@ -90,9 +92,9 @@ class InviteWithdrawForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     /** @var \Drupal\invite\InviteInterface $invite */
     $invite = $this->inviteStorage;
-    $invite->setInviteStatus(INVITE_WITHDRAWN);
-    $invite->save();
+    invite_by_email_send_invitation($invite);
     $url  = Url::fromRoute('user.page');
     $form_state->setRedirectUrl($url);
   }
+
 }
