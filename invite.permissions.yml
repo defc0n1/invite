@@ -17,3 +17,33 @@ view published invite entities:
 
 view unpublished invite entities:
   title: 'View unpublished Invite entities'
+
+view any invite entities:
+  title: 'View any invites'
+  description: 'Allows users to view invites.'
+  restrict access: true
+
+edit any invite entities:
+  title: 'Edit any invites'
+  description: 'Allows users to edit any invites.'
+  restrict access: true
+
+edit own invite entities:
+  title: 'Edit own invites'
+  description: 'Allows users to edit own invites.'
+  restrict access: true
+
+withdraw own invitations:
+  title: 'Withdraw own invitations'
+  description: 'Allows users to withdraw own invitations.'
+  restrict access: false
+
+withdraw own accepted invitations:
+  title: 'Withdraw own accepted invitations'
+  description: 'Allows users to edit own invites.'
+  restrict access: false
+
+administer invite settings:
+  title: 'Administer Invite settings'
+  description: 'Allows to access invite administration pages.'
+  restrict access: true
