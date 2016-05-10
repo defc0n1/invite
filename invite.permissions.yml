@@ -47,3 +47,4 @@ administer invite settings:
   title: 'Administer Invite settings'
   description: 'Allows to access invite administration pages.'
   restrict access: true
+
