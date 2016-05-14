@@ -45,4 +45,30 @@ class InviteListBuilder extends EntityListBuilder {
     return $row + parent::buildRow($entity);
   }
 
+  /**
+   * {@inheritdoc}
+   */
+  public function getOperations(EntityInterface $entity) {
+    $operations = parent::getOperations($entity);
+    $operations['withdraw'] = array(
+      'title' => $this->t('Withdraw Invite'),
+      'weight' => 10,
+      'url' => new Url(
+        'invite.invite_withdraw_form', array(
+          'invite' => $entity->id(),
+        )
+      ),
+    );
+    $operations['resend'] = array(
+      'title' => $this->t('Resend Invite'),
+      'weight' => 11,
+      'url' => new Url(
+        'invite.invite_resend_form', array(
+          'invite' => $entity->id(),
+        )
+      ),
+    );
+    return $operations;
+  }
+
 }
